@@ -12,7 +12,7 @@ namespace Project.Application.Adapters
 		public ModelToDomainEntity()
 		{
 			CreateMap<LancamentosCadastroModel, Lancamentos>();
-			CreateMap<LancamentosEdicaoModel, LancamentosEdicaoModel>();
+			CreateMap<LancamentosEdicaoModel, Lancamentos>();
 		}
 	}
 }

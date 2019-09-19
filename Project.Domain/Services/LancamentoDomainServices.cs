@@ -17,5 +17,111 @@ namespace Project.Domain.Services
 		{
 			this.repository = repository;
 		}
+
+		public decimal ConsultaSaldoTotal()
+		{
+			var todos = repository.SelectAll();
+
+			decimal saida = 0;
+			decimal entrada = 0;
+			decimal saldo;
+
+			foreach (var item in todos)
+			{
+
+				if (item.Tipo.Contains("entrada"))
+				{
+					entrada += item.ValorLancamento;
+				}
+				else
+				{
+					saida += item.ValorLancamento;
+				}
+
+			}
+
+			saldo = entrada - saida;
+
+			return saldo;
+
+		}
+
+		public decimal ColsultarSaldoDia()
+		{
+			var timer = DateTime.Now.Date;
+
+			var dia = repository.SelectAllDate(timer);
+			decimal saida = 0;
+			decimal entrada = 0;
+			decimal saldo;
+
+			foreach (var item in dia)
+			{
+
+				if (item.Tipo.Contains("entrada"))
+				{
+					entrada += item.ValorLancamento;
+				}
+				else
+				{
+					saida += item.ValorLancamento;
+				}
+
+			}
+
+			saldo = entrada - saida;
+
+			return saldo;
+		}
+
+		public decimal ColsultarSaldoDiaAnterior()
+		{
+			var timer = DateTime.Today.AddDays(-1);
+
+			var dia = repository.SelectAllDate(timer);
+			decimal saida = 0;
+			decimal entrada = 0;
+			decimal saldo;
+
+			foreach (var item in dia)
+			{
+
+				if (item.Tipo.Contains("entrada"))
+				{
+					entrada += item.ValorLancamento;
+				}
+				else
+				{
+					saida += item.ValorLancamento;
+				}
+
+			}
+
+			saldo = entrada - saida;
+
+			return saldo;
+		}
+
+		/*public List<Lancamentos> ConsultaLayout(DateTime de, DateTime para)
+		{
+
+			var conjuntos = repository.SelectAllDate(de, para);
+
+			var list = new List<Lancamentos>();
+			var indice = new Lancamentos();
+
+
+			foreach (var item in conjuntos)
+			{
+
+				indice.Tipo = item.Tipo;
+				indice.DataLancamento = item.DataLancamento;
+				indice.ValorLancamento = item.ValorLancamento;
+
+				list.Add(indice);
+			}
+
+			return list;
+		}*/
 	}
 }

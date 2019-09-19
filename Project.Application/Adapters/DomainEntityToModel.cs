@@ -12,6 +12,7 @@ namespace Project.Application.Adapters
 		public DomainEntityToModel()
 		{
 			CreateMap<Lancamentos, LancamentosConsultaModel>();
+			CreateMap<FormatoJson, LancamentosConsultaModel>();
 		}
 
 	}

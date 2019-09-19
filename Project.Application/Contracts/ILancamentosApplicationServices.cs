@@ -11,7 +11,8 @@ namespace Project.Application.Contracts
 		void Atualizar(LancamentosEdicaoModel model);
 		void Excluir(int id);
 
-		List<LancamentosConsultaModel> ConsultarTodos();
+		//List<LancamentosConsultaModel> ConsultarTodos();
+		LancamentosConsultaModel ConsultarTodosOsDados();
 		LancamentosConsultaModel ConsultarPorId(int id);
 
 	}

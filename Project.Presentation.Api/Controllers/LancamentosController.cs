@@ -92,7 +92,7 @@ namespace Project.Presentation.Api.Controllers
 		{
 			try
 			{
-				var result = applicationServices.ConsultarTodos();
+				var result = applicationServices.ConsultarTodosOsDados();
 				return Ok(result);
 			}
 			catch (Exception e)

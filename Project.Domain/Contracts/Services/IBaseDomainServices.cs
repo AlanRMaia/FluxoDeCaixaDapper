@@ -11,6 +11,9 @@ namespace Project.Domain.Contracts.Services
 		void Atualizar(TEntity obj);
 		void Excluir(TEntity obj);
 
+		List<TEntity> LancamentosDoDia(DateTime obj);
+		List<TEntity> LancamentosDoDia(DateTime of, DateTime to);
+
 		List<TEntity> ConsultarTodos();
 		TEntity ConsultarPorId(int id);
 

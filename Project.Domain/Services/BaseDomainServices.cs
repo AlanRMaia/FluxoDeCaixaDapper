@@ -46,5 +46,15 @@ namespace Project.Domain.Services
 		{
 			repository.Dispose();
 		}
+
+		public List<TEntity> LancamentosDoDia(DateTime obj)
+		{
+		 return repository.SelectAllDate(obj);
+		}
+
+		public List<TEntity> LancamentosDoDia(DateTime of, DateTime to)
+		{
+			return repository.SelectAllDate(of, to); ;
+		}
 	}
 }

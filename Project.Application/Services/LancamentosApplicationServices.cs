@@ -38,10 +38,49 @@ namespace Project.Application.Services
 			domainServices.Excluir(entity);
 		}
 
-		public List<LancamentosConsultaModel> ConsultarTodos()
+		public LancamentosConsultaModel ConsultarTodosOsDados()
 		{
-			var entityList = domainServices.ConsultarTodos();
-			return Mapper.Map<List<LancamentosConsultaModel>>(entityList);
+			var json = new LancamentosConsultaModel();
+			var formatoJson = new FormatoJson();
+
+			var dia = DateTime.Now;
+
+			var lancamentosDia = domainServices.LancamentosDoDia(DateTime.Now);
+			var saldoDia = domainServices.ColsultarSaldoDia();
+			var saldoDiaAnteri = domainServices.ColsultarSaldoDiaAnterior();
+			var trintaDias = domainServices.LancamentosDoDia(DateTime.Now, DateTime.Now.AddMonths(1));
+			var porcentagem = 1 - saldoDia / saldoDiaAnteri;
+			var valorPorcen = $"{porcentagem}%";
+
+			var listLancamentosDia = new List<FormatoJson>();
+			foreach (var item in lancamentosDia)
+			{
+				formatoJson.Tipo = item.Tipo;
+				formatoJson.DataLancamento = item.DataLancamento;
+				formatoJson.ValorLancamento = item.ValorLancamento;
+
+				listLancamentosDia.Add(formatoJson);
+			}
+
+			var listTrintaDias = new List<FormatoJson>();
+			foreach (var item in trintaDias)
+			{
+				formatoJson.Tipo = item.Tipo;
+				formatoJson.DataLancamento = item.DataLancamento;
+				formatoJson.ValorLancamento = item.ValorLancamento;
+
+				listTrintaDias.Add(formatoJson);
+			}
+
+			json.DiaConsulta = dia;
+			json.LancamentosDoDia = listLancamentosDia;
+			json.TrintaDiasSeguintes = listTrintaDias;
+			json.ComparacaoDiaAnterior = valorPorcen;
+			json.SaldoTotalDoDia = saldoDia;
+			
+
+
+			return Mapper.Map<LancamentosConsultaModel>(json);
 		}
 
 		public LancamentosConsultaModel ConsultarPorId(int id)

@@ -42,7 +42,7 @@ namespace Project.Infra.Data.Repositories
 		}
 		
 
-		public List<TEntity> SelectAllDate(DateTime obj)
+		public virtual List<TEntity> SelectAllDate(DateTime obj)
 		{
 			return dataContext.Set<TEntity>().ToList();
 		}
@@ -72,9 +72,9 @@ namespace Project.Infra.Data.Repositories
 			dataContext.Dispose();
 		}
 
-		public List<TEntity> SelectAllDate(DateTime of, DateTime to)
+		public virtual List<TEntity> SelectAllDate(DateTime of, DateTime to)
 		{
-			throw new NotImplementedException();
+			return dataContext.Set<TEntity>().ToList();
 		}
 	}
 }
