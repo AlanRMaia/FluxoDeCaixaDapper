@@ -19,14 +19,16 @@ using Project.Domain.Services;
 using Project.Infra.Data.Repositories;
 using Project.Domain.Contracts.Repositories;
 using Project.Application.Adapters;
+using System.Threading;
 
 namespace Project.Presentation.Api
 {
 	public class Startup
 	{
+		
 		public Startup(IConfiguration configuration)
 		{
-			Configuration = configuration;
+			Configuration = configuration;			
 		}
 
 		public IConfiguration Configuration { get; }
@@ -34,6 +36,8 @@ namespace Project.Presentation.Api
 		// This method gets called by the runtime. Use this method to add services to the container.
 		public void ConfigureServices(IServiceCollection services)
 		{
+			
+
 			#region Configuração para o EntityFramework
 
 			//mapeando injeção de dependência para a classe DataContext

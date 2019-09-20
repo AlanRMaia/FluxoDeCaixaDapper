@@ -9,5 +9,8 @@ namespace Project.Domain.Contracts.Services
 	public interface IEncargosDomainServices
 		: IBaseDomainServices<Encargos>
 	{
+		void EncargosDia(Lancamentos lancamentos);
+
+		
 	}
 }

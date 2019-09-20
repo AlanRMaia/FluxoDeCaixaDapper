@@ -41,20 +41,21 @@ namespace Project.Application.Services
 		public LancamentosConsultaModel ConsultarTodosOsDados()
 		{
 			var json = new LancamentosConsultaModel();
-			var formatoJson = new FormatoJson();
 
 			var dia = DateTime.Now;
 
-			var lancamentosDia = domainServices.LancamentosDoDia(DateTime.Now);
+			var lancamentosDia = domainServices.LancamentosDoDia(dia);
 			var saldoDia = domainServices.ColsultarSaldoDia();
 			var saldoDiaAnteri = domainServices.ColsultarSaldoDiaAnterior();
 			var trintaDias = domainServices.LancamentosDoDia(DateTime.Now, DateTime.Now.AddMonths(1));
-			var porcentagem = 1 - saldoDia / saldoDiaAnteri;
-			var valorPorcen = $"{porcentagem}%";
+			var porcentagem = (saldoDia - saldoDiaAnteri)/saldoDiaAnteri*100;
+			var valorPorcen = $"{porcentagem.ToString("0.00")}%";
 
 			var listLancamentosDia = new List<FormatoJson>();
 			foreach (var item in lancamentosDia)
 			{
+				var formatoJson = new FormatoJson();
+
 				formatoJson.Tipo = item.Tipo;
 				formatoJson.DataLancamento = item.DataLancamento;
 				formatoJson.ValorLancamento = item.ValorLancamento;
@@ -65,6 +66,8 @@ namespace Project.Application.Services
 			var listTrintaDias = new List<FormatoJson>();
 			foreach (var item in trintaDias)
 			{
+				var formatoJson = new FormatoJson();
+
 				formatoJson.Tipo = item.Tipo;
 				formatoJson.DataLancamento = item.DataLancamento;
 				formatoJson.ValorLancamento = item.ValorLancamento;

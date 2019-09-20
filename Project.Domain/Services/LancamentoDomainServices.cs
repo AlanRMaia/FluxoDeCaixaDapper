@@ -11,12 +11,40 @@ namespace Project.Domain.Services
 		BaseDomainServices<Lancamentos>, ILancamentosDomainServices
 	{
 		private readonly ILancamentosRepository repository;
+	
 
 		public LancamentoDomainServices(ILancamentosRepository repository)
-			:base(repository)
+			: base(repository)
 		{
 			this.repository = repository;
+			
 		}
+
+
+		public override void Cadastrar(Lancamentos obj)
+		{
+			if (ConsultaSaldoTotal() <= -20000)
+			{
+				return;
+			}
+			else if (ConsultaSaldoTotal() < 0 && ConsultaSaldoTotal() > -20000)
+			{
+				
+				repository.Insert(obj);
+				encargos.EncargosDia(obj);
+			}
+
+			repository.Insert(obj);
+
+			
+			if (ConsultaSaldoTotal() < 0 && ConsultaSaldoTotal() > -20000)
+			{
+
+				encargos.EncargosDia(obj);
+			}
+		}
+
+
 
 		public decimal ConsultaSaldoTotal()
 		{

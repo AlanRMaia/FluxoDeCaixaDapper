@@ -17,7 +17,7 @@ namespace Project.Domain.Services
 			this.repository = repository;
 		}
 
-		public void Cadastrar(TEntity obj)
+		public virtual void Cadastrar(TEntity obj)
 		{
 			repository.Insert(obj);
 		}
