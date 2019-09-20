@@ -5,8 +5,13 @@ using Project.Domain.Entities;
 
 namespace Project.Domain.Contracts.Repositories
 {
-	public interface IEncargosRepository 
-		: IBaseRepository<Encargos>
+	public interface IEncargosRepository 	
 	{
+
+		void Insert(Encargos obj);		
+		void Delete(Encargos obj);
+		Encargos SelectOne(int id);
+
+
 	}
 }

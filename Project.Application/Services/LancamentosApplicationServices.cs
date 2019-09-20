@@ -44,12 +44,12 @@ namespace Project.Application.Services
 
 			var dia = DateTime.Now;
 
-			var lancamentosDia = domainServices.LancamentosDoDia(dia);
+			var lancamentosDia = domainServices.ConsultarLancamentosDia(dia);
 			var saldoDia = domainServices.ColsultarSaldoDia();
 			var saldoDiaAnteri = domainServices.ColsultarSaldoDiaAnterior();
-			var trintaDias = domainServices.LancamentosDoDia(DateTime.Now, DateTime.Now.AddMonths(1));
+			var trintaDias = domainServices.ConsultarTrintaDias(DateTime.Now, DateTime.Now.AddMonths(1));
 			var porcentagem = (saldoDia - saldoDiaAnteri)/saldoDiaAnteri*100;
-			var valorPorcen = $"{porcentagem.ToString("0.00")}%";
+			var valorPorcen = $"{porcentagem.ToString("000.0%")}";
 
 			var listLancamentosDia = new List<FormatoJson>();
 			foreach (var item in lancamentosDia)
@@ -77,9 +77,9 @@ namespace Project.Application.Services
 
 			json.DiaConsulta = dia;
 			json.LancamentosDoDia = listLancamentosDia;
+			json.SaldoTotalDoDia = saldoDia;
 			json.TrintaDiasSeguintes = listTrintaDias;
 			json.ComparacaoDiaAnterior = valorPorcen;
-			json.SaldoTotalDoDia = saldoDia;
 			
 
 
@@ -92,9 +92,6 @@ namespace Project.Application.Services
 			return Mapper.Map<LancamentosConsultaModel>(entity);
 		}
 
-		public void Dispose()
-		{
-			domainServices.Dispose();
-		}
+		
 	}
 }

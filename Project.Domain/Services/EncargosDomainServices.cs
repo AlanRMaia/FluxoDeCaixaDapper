@@ -10,17 +10,21 @@ using Project.Domain.Entities;
 namespace Project.Domain.Services
 {
 	public class EncargosDomainServices 
-		: BaseDomainServices<Encargos>, IEncargosDomainServices
+		: IEncargosDomainServices
 	{
 		private readonly IEncargosRepository repository;
-		
+		LancamentoDomainServices lancamentosDomain;
 
 		public EncargosDomainServices(IEncargosRepository repository)
-			: base(repository)
 		{
 			this.repository = repository;
 			
 		}
+
+		public EncargosDomainServices()
+		{
+		}
+
 		//método para incluir o encargo que é acionado ao descobir que cadastrar o lancamento
 		//o saldo ficou abaixo de zero
 		public void EncargosDia(Lancamentos lancamentos)
@@ -68,6 +72,14 @@ namespace Project.Domain.Services
 
 		}
 
-		
+		public void Insert(Encargos obj)
+		{
+			repository.Insert(obj);
+		}
+
+		public void Delete(Encargos obj)
+		{
+			repository.Delete(obj);
+		}
 	}
 }

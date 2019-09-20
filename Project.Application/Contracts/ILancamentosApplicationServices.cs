@@ -5,7 +5,7 @@ using Project.Application.Models;
 
 namespace Project.Application.Contracts
 {
-	public interface ILancamentosApplicationServices : IDisposable		
+	public interface ILancamentosApplicationServices 		
 	{
 		void Cadastrar(LancamentosCadastroModel model);
 		void Atualizar(LancamentosEdicaoModel model);
