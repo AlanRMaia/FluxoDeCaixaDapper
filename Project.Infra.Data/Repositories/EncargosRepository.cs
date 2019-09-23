@@ -7,6 +7,7 @@ using Project.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 
+
 namespace Project.Infra.Data.Repositories
 {
 	public class EncargosRepository 
@@ -22,7 +23,7 @@ namespace Project.Infra.Data.Repositories
 		public void Insert(Encargos obj)
 		{
 			dataContext.Entry(obj).State = EntityState.Added;
-			dataContext.SaveChanges();
+			dataContext.SaveChanges() ;
 		}		
 
 		public void Delete(Encargos obj)
@@ -31,14 +32,15 @@ namespace Project.Infra.Data.Repositories
 			dataContext.SaveChanges();
 		}			
 
-		public Encargos SelectOne(int id)
+		public Encargos SelectOne(DateTime obj)
 		{
-			return dataContext.Set<Encargos>().Find(id);
+
+			return dataContext.Encargos.AsNoTracking()
+				.Where(e => e.DataLancamento == obj)
+				.SingleOrDefault();
+					
 		}
 
 		
-
-		
-
 	}
 }

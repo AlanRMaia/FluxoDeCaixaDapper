@@ -7,9 +7,9 @@ using Project.Domain.Entities;
 namespace Project.Domain.Contracts.Services
 {
 	public interface IEncargosDomainServices		
-	{
-		void EncargosDia(Lancamentos lancamentos);
+	{		
 		void Insert(Encargos obj);
 		void Delete(Encargos obj);
+		Encargos SelectOne(DateTime obj);
 	}
 }

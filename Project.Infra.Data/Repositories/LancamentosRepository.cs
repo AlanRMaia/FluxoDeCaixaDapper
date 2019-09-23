@@ -22,7 +22,7 @@ namespace Project.Infra.Data.Repositories
 
 		public  List<Lancamentos> SelectAllDate(DateTime of, DateTime to)
 		{
-			return dataContext.Lancamentos
+			return dataContext.Lancamentos.AsNoTracking()
 				.Where(l => l.DataLancamento >= of && l.DataLancamento <= to)
 				.OrderByDescending(l => l.DataLancamento)
 				.ToList();
@@ -31,7 +31,7 @@ namespace Project.Infra.Data.Repositories
 
 		public List<Lancamentos> SelectAllDate(DateTime obj)
 		{
-			return dataContext.Lancamentos
+			return dataContext.Lancamentos.AsNoTracking()
 				.Where(l => l.DataLancamento == obj)
 				.OrderByDescending(l => l.DataLancamento)
 				.ToList();
@@ -59,7 +59,7 @@ namespace Project.Infra.Data.Repositories
 
 		public List<Lancamentos> SelectAll()
 		{
-			return dataContext.Set<Lancamentos>().ToList();
+			return dataContext.Set<Lancamentos>().AsNoTracking().ToList();
 		}		
 		
 
@@ -70,7 +70,7 @@ namespace Project.Infra.Data.Repositories
 
 		public virtual Lancamentos SelectOne(DateTime obj)
 		{
-			return dataContext.Set<Lancamentos>().SingleOrDefault();
+			return dataContext.Set<Lancamentos>().AsNoTracking().SingleOrDefault();
 		}
 
 		public virtual int Count()

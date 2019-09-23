@@ -10,7 +10,8 @@ namespace Project.Domain.Contracts.Repositories
 
 		void Insert(Encargos obj);		
 		void Delete(Encargos obj);
-		Encargos SelectOne(int id);
+		Encargos SelectOne(DateTime obj);
+	
 
 
 	}

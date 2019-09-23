@@ -4,6 +4,8 @@ using System.Text;
 using Project.Domain.Contracts.Services;
 using Project.Domain.Contracts.Repositories;
 using Project.Domain.Entities;
+using Project.Domain.Class_Utilities;
+using Project.Domain.Class_Utilities.Contracts;
 
 namespace Project.Domain.Services
 {
@@ -11,58 +13,55 @@ namespace Project.Domain.Services
 		ILancamentosDomainServices
 	{
 		private readonly ILancamentosRepository repository;
-		EncargosDomainServices encargos;
+		private readonly IEncargosUtilidades encargosUtilidades;
+		private readonly IEncargosDomainServices encargosDomain;
 
-
-		public LancamentoDomainServices(ILancamentosRepository repository)
+		public LancamentoDomainServices(ILancamentosRepository repository, IEncargosUtilidades encargosUtilidades, IEncargosDomainServices encargosDomain)
 		{
 			this.repository = repository;
-		
+
+			this.encargosUtilidades = encargosUtilidades;
+			this.encargosDomain = encargosDomain;
 		}
 
-		public LancamentoDomainServices()
-		{
-		}
+
 
 		public void Cadastrar(Lancamentos obj)
 		{
 			//método para impedir o cadastro quando o saldo está negativo igual ou que -20000
-			if (ConsultaSaldoTotal() <= -20000)
+			if (ColsultarSaldoDia() <= -20000)
 			{
 				return;
 			}
-			else if (ConsultaSaldoTotal() < 0 && ConsultaSaldoTotal() > -20000)
+			else if (obj.DataLancamento < DateTime.Now)
 			{
-				//verificar se o lancamento colocado irá exceder os -20000
-				//caso sim o lancamento será cancelado
-				var saldoTotal = ConsultaSaldoTotal();
-				var saldo = saldoTotal - obj.ValorLancamento;
-
-				if (saldo <= -20000)
-				{
-					return ;
-				}
-				
-				repository.Insert(obj);
-
-				encargos.EncargosDia(obj);//inclui encargos e o lancamento na tabela lancamento com tipo "saida"
+				return;
 			}
-
-			//verificar se o lancamento colocado vai exceder os - 20000, mesmo com o saldo acima de 0
-			var _saldoTotal = ConsultaSaldoTotal();
+			
+			//verificar se o lancamento colocado vai exceder os - 20000, mesmo com o saldo acima de 0 ou 
+			//com o desconto do encargo do dia
+			var _saldoTotal = ColsultarSaldoDia();
 			var _saldo = _saldoTotal - obj.ValorLancamento;
 
 			if (_saldo <= -20000)
 			{
 				return;
 			}
+			else
+			{
+				repository.Insert(obj);
 
-			repository.Insert(obj);
+			}
+
 
 			//verificar se depois do saldo incluso ele ficou negativo
-			if (ConsultaSaldoTotal() < 0 && ConsultaSaldoTotal() > -20000)
+			if (ColsultarSaldoDia() < 0 && ColsultarSaldoDia() > -20000)
 			{
-				encargos.EncargosDia(obj);
+				if (encargosDomain.SelectOne(DateTime.Now) == null)
+				{
+					encargosUtilidades.EncargosDia(obj);//inclui encargos e o lancamento na tabela lancamento com tipo "saida"
+
+				}
 			}
 		}
 
@@ -182,26 +181,6 @@ namespace Project.Domain.Services
 			return repository.SelectAllDate(date);
 		}
 
-		/*public List<Lancamentos> ConsultaLayout(DateTime de, DateTime para)
-		{
-
-			var conjuntos = repository.SelectAllDate(de, para);
-
-			var list = new List<Lancamentos>();
-			var indice = new Lancamentos();
-
-
-			foreach (var item in conjuntos)
-			{
-
-				indice.Tipo = item.Tipo;
-				indice.DataLancamento = item.DataLancamento;
-				indice.ValorLancamento = item.ValorLancamento;
-
-				list.Add(indice);
-			}
-
-			return list;
-		}*/
+		
 	}
 }

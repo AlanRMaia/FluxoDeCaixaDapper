@@ -19,6 +19,8 @@ using Project.Domain.Services;
 using Project.Infra.Data.Repositories;
 using Project.Domain.Contracts.Repositories;
 using Project.Application.Adapters;
+using Project.Domain.Class_Utilities.Contracts;
+using Project.Domain.Class_Utilities;
 using System.Threading;
 
 namespace Project.Presentation.Api
@@ -58,6 +60,7 @@ namespace Project.Presentation.Api
 			//camada de dominio
 			services.AddTransient<ILancamentosDomainServices, LancamentoDomainServices>();
 			services.AddTransient<IEncargosDomainServices, EncargosDomainServices>();
+			services.AddTransient<IEncargosUtilidades, EncargosUtilidades>();
 
 			//camada de infra estrutura do repositorio
 			services.AddTransient<ILancamentosRepository, LancamentosRepository>();

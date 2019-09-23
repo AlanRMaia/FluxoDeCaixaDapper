@@ -42,7 +42,8 @@ namespace Project.Infra.Data.Mappings
 				.IsRequired();
 
 			builder.Property(c => c.ValorEncargo)
-				.HasColumnType("decimal(18,2)");
+				.HasColumnType("decimal(18,2)")
+				.IsRequired();
 
 
 			builder.Property(c => c.Descricao)

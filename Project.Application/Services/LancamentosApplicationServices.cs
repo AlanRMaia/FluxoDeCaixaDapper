@@ -49,7 +49,7 @@ namespace Project.Application.Services
 			var saldoDiaAnteri = domainServices.ColsultarSaldoDiaAnterior();
 			var trintaDias = domainServices.ConsultarTrintaDias(DateTime.Now, DateTime.Now.AddMonths(1));
 			var porcentagem = (saldoDia - saldoDiaAnteri)/saldoDiaAnteri*100;
-			var valorPorcen = $"{porcentagem.ToString("000.0%")}";
+			var valorPorcen = $"{porcentagem.ToString("0.0%")}";
 
 			var listLancamentosDia = new List<FormatoJson>();
 			foreach (var item in lancamentosDia)

@@ -10,7 +10,7 @@ using Project.Infra.Data.Context;
 namespace Project.Infra.Data.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20190919125441_Projeto")]
+    [Migration("20190923193217_Projeto")]
     partial class Projeto
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
