@@ -6,7 +6,7 @@ using Project.Domain.Contracts.Services;
 using Project.Domain.Entities;
 using AutoMapper;
 using Project.Application.Models;
-
+using System.Globalization;
 
 namespace Project.Application.Services
 {
@@ -14,6 +14,7 @@ namespace Project.Application.Services
 	{
 
 		private readonly ILancamentosDomainServices domainServices;
+		private CultureInfo culture;
 
 		public LancamentosApplicationServices(ILancamentosDomainServices domainServices)
 		{
@@ -49,7 +50,8 @@ namespace Project.Application.Services
 			var saldoDiaAnteri = domainServices.ColsultarSaldoDiaAnterior();
 			var trintaDias = domainServices.ConsultarTrintaDias(DateTime.Now, DateTime.Now.AddMonths(1));
 			var porcentagem = (saldoDia - saldoDiaAnteri)/saldoDiaAnteri*100;
-			var valorPorcen = $"{porcentagem.ToString("0.0%")}";
+			culture = CultureInfo.InvariantCulture;
+			var valorPorcen = $"{porcentagem.ToString("##.##", culture)}%";
 
 			var listLancamentosDia = new List<FormatoJson>();
 			foreach (var item in lancamentosDia)

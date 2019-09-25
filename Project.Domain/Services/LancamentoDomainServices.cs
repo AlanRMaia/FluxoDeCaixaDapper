@@ -28,24 +28,34 @@ namespace Project.Domain.Services
 
 		public void Cadastrar(Lancamentos obj)
 		{
-			//método para impedir o cadastro quando o saldo está negativo igual ou que -20000
+			//método para impedir o cadastro quando o saldo está menor ou igual a -20000
 			if (ColsultarSaldoDia() <= -20000)
 			{
-				return;
+				throw new ArgumentException("Não é possível cadastrar o lancamento.  Saldo negativo!");
 			}
 			else if (obj.DataLancamento < DateTime.Now)
 			{
-				return;
+				throw new ArgumentException("Data de lancamento não pode ser do dia anterior");
 			}
 			
 			//verificar se o lancamento colocado vai exceder os - 20000, mesmo com o saldo acima de 0 ou 
 			//com o desconto do encargo do dia
 			var _saldoTotal = ColsultarSaldoDia();
-			var _saldo = _saldoTotal - obj.ValorLancamento;
-
-			if (_saldo <= -20000)
+			decimal _saldo = 0;
+			if (obj.Tipo.Contains("entrada"))
 			{
-				return;
+				_saldo = _saldoTotal + obj.ValorLancamento;
+			}
+			else
+			{
+				 _saldo = _saldoTotal - obj.ValorLancamento;
+			}
+			
+
+
+			if (_saldo < -20000)
+			{
+				throw new ArgumentException("Não é possível cadastrar o lancamento. Saldo negativo!");
 			}
 			else
 			{
