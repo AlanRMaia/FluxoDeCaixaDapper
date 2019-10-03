@@ -70,7 +70,9 @@ namespace Project.Domain.Services
 				if (encargosDomain.SelectOne(DateTime.Now) == null)
 				{
 					encargosUtilidades.EncargosDia(obj);//inclui encargos e o lancamento na tabela lancamento com tipo "saida"
+					obj.Tipo = "saida";
 
+					repository.Insert(obj);
 				}
 			}
 		}

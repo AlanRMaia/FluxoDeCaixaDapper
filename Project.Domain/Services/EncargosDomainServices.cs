@@ -23,12 +23,7 @@ namespace Project.Domain.Services
 		public void Insert(Encargos obj)
 		{
 			repository.Insert(obj);
-		}
-
-		public void Delete(Encargos obj)
-		{
-			repository.Delete(obj);
-		}
+		}		
 
 		public Encargos SelectOne(DateTime obj)
 		{

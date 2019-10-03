@@ -8,9 +8,9 @@ namespace Project.Domain.Class_Utilities.Contracts
 	public interface IEncargosUtilidades
 	{
 		decimal ColsultarSaldoDia();
-
-		decimal ConsultaSaldoTotal();		
-			
+		decimal ConsultaSaldoTotal();
+		
 		void EncargosDia(Lancamentos lancamentos);
+		
 	}
 }

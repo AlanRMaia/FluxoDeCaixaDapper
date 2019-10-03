@@ -25,12 +25,7 @@ namespace Project.Infra.Data.Repositories
 			dataContext.Entry(obj).State = EntityState.Added;
 			dataContext.SaveChanges() ;
 		}		
-
-		public void Delete(Encargos obj)
-		{
-			dataContext.Entry(obj).State = EntityState.Deleted;
-			dataContext.SaveChanges();
-		}			
+		
 
 		public Encargos SelectOne(DateTime obj)
 		{

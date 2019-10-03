@@ -9,24 +9,24 @@ using System.Linq;
 
 namespace Project.Infra.Data.Repositories
 {
-	public class LancamentosRepository 
+	public class LancamentosRepository
 		: ILancamentosRepository
 	{
 		private readonly DataContext dataContext;
 
-		public LancamentosRepository(DataContext dataContext)			
+		public LancamentosRepository(DataContext dataContext)
 		{
 			this.dataContext = dataContext;
 		}
 
 
-		public  List<Lancamentos> SelectAllDate(DateTime of, DateTime to)
+		public List<Lancamentos> SelectAllDate(DateTime of, DateTime to)
 		{
 			return dataContext.Lancamentos.AsNoTracking()
 				.Where(l => l.DataLancamento >= of && l.DataLancamento <= to)
 				.OrderByDescending(l => l.DataLancamento)
 				.ToList();
-				
+
 		}
 
 		public List<Lancamentos> SelectAllDate(DateTime obj)
@@ -37,13 +37,21 @@ namespace Project.Infra.Data.Repositories
 				.ToList();
 		}
 
-		
+
 
 		public void Insert(Lancamentos obj)
 		{
 			dataContext.Entry(obj).State = EntityState.Added;
 			dataContext.SaveChanges();
 		}
+
+
+		public void Insert(Encargos obj)
+		{
+			dataContext.Entry(obj).State = EntityState.Added;
+			dataContext.SaveChanges();
+		}
+
 
 		public void Update(Lancamentos obj)
 		{
@@ -60,8 +68,8 @@ namespace Project.Infra.Data.Repositories
 		public List<Lancamentos> SelectAll()
 		{
 			return dataContext.Set<Lancamentos>().AsNoTracking().ToList();
-		}		
-		
+		}
+
 
 		public Lancamentos SelectOne(int id)
 		{
@@ -81,8 +89,8 @@ namespace Project.Infra.Data.Repositories
 		public int Count(DateTime obj)
 		{
 			throw new NotImplementedException();
-		}	
+		}
 
-		
+
 	}
 }

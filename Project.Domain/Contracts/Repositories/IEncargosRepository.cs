@@ -8,8 +8,7 @@ namespace Project.Domain.Contracts.Repositories
 	public interface IEncargosRepository 	
 	{
 
-		void Insert(Encargos obj);		
-		void Delete(Encargos obj);
+		void Insert(Encargos obj);			
 		Encargos SelectOne(DateTime obj);
 	
 

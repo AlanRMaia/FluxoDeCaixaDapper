@@ -9,6 +9,8 @@ namespace Project.Domain.Contracts.Repositories
 	
 	{
 		void Insert(Lancamentos obj);
+		void Insert(Encargos obj);
+
 		void Update(Lancamentos obj);
 		void Delete(Lancamentos id);
 

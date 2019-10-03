@@ -8,8 +8,7 @@ namespace Project.Domain.Contracts.Services
 {
 	public interface IEncargosDomainServices		
 	{		
-		void Insert(Encargos obj);
-		void Delete(Encargos obj);
+		void Insert(Encargos obj);		
 		Encargos SelectOne(DateTime obj);
 	}
 }
