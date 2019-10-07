@@ -12,16 +12,16 @@ namespace Project.Domain.Class_Utilities
 {
 	public class EncargosUtilidades : IEncargosUtilidades
 	{
-		
-		
+
+
 		private readonly IEncargosRepository encargosRepository;
 		private readonly ILancamentosRepository lancamentosRepository;
 
 
 
-		public EncargosUtilidades( IEncargosRepository encargosRepository, ILancamentosRepository lancamentosRepository)
+		public EncargosUtilidades(IEncargosRepository encargosRepository, ILancamentosRepository lancamentosRepository)
 		{
-				
+
 			this.encargosRepository = encargosRepository;
 			this.lancamentosRepository = lancamentosRepository;
 		}
@@ -59,6 +59,8 @@ namespace Project.Domain.Class_Utilities
 			var timer = DateTime.Now.Date;
 
 			var dia = lancamentosRepository.SelectAllDate(timer);
+			var encargoDia = encargosRepository?.SelectOne(timer);
+			var encargo = encargoDia?.ValorLancamento ?? 0;
 			decimal saida = 0;
 			decimal entrada = 0;
 			decimal saldo;
@@ -77,36 +79,36 @@ namespace Project.Domain.Class_Utilities
 
 			}
 
-			saldo = entrada - saida;
+			saldo = entrada - (saida + encargo);
 
 			return saldo;
 		}
 
 		public void EncargosDia(Lancamentos lancamentos)
 		{
-
-			Encargos encargos = new Encargos();			
-			
+			Encargos encargos = new Encargos();
+			decimal valorDeEncargo = 083;
 			var porcentagem = (double)ColsultarSaldoDia();
 
 			lancamentos.Tipo = "saida";
 			lancamentos.ValorLancamento = (decimal)(0.83 * (porcentagem / 100));
+			lancamentos.ValorEncargos = valorDeEncargo;
 
 			encargos.BancoDestino = lancamentos.BancoDestino;
 			encargos.ContaDestino = lancamentos.ContaDestino;
 			encargos.CpfCnpjDestino = lancamentos.CpfCnpjDestino;
 			encargos.DataLancamento = lancamentos.DataLancamento;
 			encargos.Descricao = lancamentos.Descricao;
-			encargos.Tipo = "saida";
-			encargos.TipoConta = lancamentos.TipoConta;			      
-			encargos.ValorLancamento = (decimal)(0.83 * (porcentagem / 100));
+			encargos.Tipo = lancamentos.Tipo;
+			encargos.TipoConta = lancamentos.TipoConta;
+			encargos.ValorEncargo = lancamentos.ValorEncargos;
+			encargos.ValorLancamento = lancamentos.ValorLancamento;
 
-			encargosRepository.Insert(encargos);//inserir o encargo na tabela "Encargos"		
-			
+			encargosRepository.Insert(encargos);//inserir o encargo na tabela "Encargos"	
 
 
 		}
 
-		
+
 	}
 }

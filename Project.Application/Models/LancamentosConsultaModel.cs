@@ -8,9 +8,9 @@ namespace Project.Application.Models
 	public class LancamentosConsultaModel
 	{
 
-		public DateTime DiaConsulta { get; set; }
+		public string DiaConsulta { get; set; }
 		public List<FormatoJson> LancamentosDoDia { get; set; }
-		public decimal SaldoTotalDoDia { get; set; }
+		public string SaldoTotalDoDia { get; set; }
 		public string ComparacaoDiaAnterior { get; set; }
 		public List<FormatoJson> TrintaDiasSeguintes { get; set; }
 

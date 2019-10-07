@@ -1,38 +1,47 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Project.Infra.Data.Context;
 using Project.Domain.Contracts.Repositories;
 using Project.Domain.Entities;
-using Microsoft.EntityFrameworkCore;
 using System.Linq;
-
+using System.Data.SqlClient;
+using Dapper;
 
 namespace Project.Infra.Data.Repositories
 {
 	public class EncargosRepository 
 		: IEncargosRepository
 	{
-		private readonly DataContext dataContext;
+		private readonly string connectionString;
 
-		public EncargosRepository(DataContext dataContext)			
+		public EncargosRepository(string connectionString)
 		{
-			this.dataContext = dataContext;
-		}		
+			this.connectionString = connectionString;
+		}
 
 		public void Insert(Encargos obj)
 		{
-			dataContext.Entry(obj).State = EntityState.Added;
-			dataContext.SaveChanges() ;
+			var query = "insert into Encargos(Tipo, Descricao, ContaDestino, BancoDestino, TipoConta, CpfCnpjDestino," +
+						" ValorLancamento, DataLancamento, ValorEncargo) "
+					  + "values(@Tipo, @Descricao, @ContaDestino, @BancoDestino, @TipoConta, @CpfCnpjDestino, @ValorLancamento," +
+						" @DataLancamento, @ValorEncargo)";
+
+			using (var conn = new SqlConnection(connectionString))
+			{
+				conn.Execute(query, obj);
+			}
 		}		
 		
 
 		public Encargos SelectOne(DateTime obj)
 		{
 
-			return dataContext.Encargos.AsNoTracking()
-				.Where(e => e.DataLancamento == obj)
-				.SingleOrDefault();
+			var query = "select * from Encargos where DataLancamento = @DataLancamento";
+
+			using (var conn = new SqlConnection(connectionString))
+			{
+				return conn.QuerySingleOrDefault<Encargos>(query, new { DataLancamento = obj });
+			}
 					
 		}
 

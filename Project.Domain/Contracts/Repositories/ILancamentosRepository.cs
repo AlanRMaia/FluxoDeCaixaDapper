@@ -9,8 +9,6 @@ namespace Project.Domain.Contracts.Repositories
 	
 	{
 		void Insert(Lancamentos obj);
-		void Insert(Encargos obj);
-
 		void Update(Lancamentos obj);
 		void Delete(Lancamentos id);
 
@@ -18,8 +16,7 @@ namespace Project.Domain.Contracts.Repositories
 		List<Lancamentos> SelectAllDate(DateTime obj);
 		List<Lancamentos> SelectAllDate(DateTime of, DateTime to);
 
-		Lancamentos SelectOne(int id);
-		Lancamentos SelectOne(DateTime obj);
+		Lancamentos SelectOne(int id);		
 
 		int Count();
 		int Count(DateTime obj);

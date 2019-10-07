@@ -4,6 +4,7 @@ using System.Text;
 using Project.Application.Contracts;
 using Project.Domain.Contracts.Services;
 using Project.Domain.Entities;
+using Project.Domain.Class_Utilities.Contracts;
 using AutoMapper;
 using Project.Application.Models;
 using System.Globalization;
@@ -14,11 +15,15 @@ namespace Project.Application.Services
 	{
 
 		private readonly ILancamentosDomainServices domainServices;
-		private CultureInfo culture;
+		private readonly IEncargosUtilidades utilidades;
+		private readonly IEncargosDomainServices encargosDomain;
+		
 
-		public LancamentosApplicationServices(ILancamentosDomainServices domainServices)
+		public LancamentosApplicationServices(ILancamentosDomainServices domainServices, IEncargosUtilidades utilidades, IEncargosDomainServices encargosDomain)
 		{
 			this.domainServices = domainServices;
+			this.utilidades = utilidades;
+			this.encargosDomain = encargosDomain;
 		}
 
 		public void Cadastrar(LancamentosCadastroModel model)
@@ -42,25 +47,59 @@ namespace Project.Application.Services
 		public LancamentosConsultaModel ConsultarTodosOsDados()
 		{
 			var json = new LancamentosConsultaModel();
+			var lancamentosDia = new List<Lancamentos>();			
+			var dia = DateTime.Today;
+			
+			if (encargosDomain.SelectOne(dia) == null)
+			{				
+				lancamentosDia = domainServices.ConsultarLancamentosDia(dia);
+			}
+			else
+			{
+				Lancamentos lancamentoDia = new Lancamentos();
 
-			var dia = DateTime.Now;
+				var encargosDia = encargosDomain.SelectOne(dia);
+				lancamentoDia.BancoDestino = encargosDia.BancoDestino;
+				lancamentoDia.ContaDestino = encargosDia.ContaDestino;
+				lancamentoDia.CpfCnpjDestino = encargosDia.CpfCnpjDestino;
+				lancamentoDia.DataLancamento = encargosDia.DataLancamento;
+				lancamentoDia.Descricao = encargosDia.Descricao;
+				lancamentoDia.Tipo = "encargos";
+				lancamentoDia.TipoConta = encargosDia.TipoConta;
+				lancamentoDia.ValorLancamento = encargosDia.ValorLancamento;
 
-			var lancamentosDia = domainServices.ConsultarLancamentosDia(dia);
-			var saldoDia = domainServices.ColsultarSaldoDia();
+				lancamentosDia = domainServices.ConsultarLancamentosDia(dia);
+
+				lancamentosDia.Add(lancamentoDia);
+
+
+			}
+
+			var saldoDia = utilidades.ColsultarSaldoDia();
 			var saldoDiaAnteri = domainServices.ColsultarSaldoDiaAnterior();
 			var trintaDias = domainServices.ConsultarTrintaDias(DateTime.Now, DateTime.Now.AddMonths(1));
-			var porcentagem = (saldoDia - saldoDiaAnteri)/saldoDiaAnteri*100;
-			culture = CultureInfo.InvariantCulture;
+			decimal porcentagem;
+			try
+			{
+				porcentagem = ((saldoDia - saldoDiaAnteri) / saldoDiaAnteri) * 100;
+			}
+			catch (DivideByZeroException)
+			{
+
+				porcentagem = 0;
+			}
+			var culture = CultureInfo.CurrentCulture;
 			var valorPorcen = $"{porcentagem.ToString("##.##", culture)}%";
 
 			var listLancamentosDia = new List<FormatoJson>();
+
 			foreach (var item in lancamentosDia)
 			{
 				var formatoJson = new FormatoJson();
 
 				formatoJson.Tipo = item.Tipo;
-				formatoJson.DataLancamento = item.DataLancamento;
-				formatoJson.ValorLancamento = item.ValorLancamento;
+				formatoJson.DataLancamento = item.DataLancamento.ToString("dd/MM/yyyy");
+				formatoJson.ValorLancamento = item.ValorLancamento.ToString("R$#,0.00");
 
 				listLancamentosDia.Add(formatoJson);
 			}
@@ -71,15 +110,15 @@ namespace Project.Application.Services
 				var formatoJson = new FormatoJson();
 
 				formatoJson.Tipo = item.Tipo;
-				formatoJson.DataLancamento = item.DataLancamento;
-				formatoJson.ValorLancamento = item.ValorLancamento;
+				formatoJson.DataLancamento = item.DataLancamento.ToString("dd/MM/yyyy");
+				formatoJson.ValorLancamento = item.ValorLancamento.ToString("R$#,0.00");
 
 				listTrintaDias.Add(formatoJson);
 			}
 
-			json.DiaConsulta = dia;
+			json.DiaConsulta = dia.ToString("dd/MM/yyyy");
 			json.LancamentosDoDia = listLancamentosDia;
-			json.SaldoTotalDoDia = saldoDia;
+			json.SaldoTotalDoDia = saldoDia.ToString("R$#,0.00");
 			json.TrintaDiasSeguintes = listTrintaDias;
 			json.ComparacaoDiaAnterior = valorPorcen;
 			

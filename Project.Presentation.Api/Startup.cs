@@ -10,7 +10,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Project.Infra.Data.Context;
 using Swashbuckle.AspNetCore.Swagger;
 using Project.Application.Contracts;
 using Project.Application.Services;
@@ -38,19 +37,11 @@ namespace Project.Presentation.Api
 		// This method gets called by the runtime. Use this method to add services to the container.
 		public void ConfigureServices(IServiceCollection services)
 		{
-			
 
-			#region Configuração para o EntityFramework
+			//ler a string de conexão contida no arquivo appsettings.json
+			var connectionString = Configuration.GetConnectionString("Conexao");
 
-			//mapeando injeção de dependência para a classe DataContext
-			services.AddTransient<DataContext>();
-
-			//mapeando a string de conexão que será enviada para a classe DataContext
-			services.AddDbContext<DataContext>(
-					options => options.UseSqlServer(Configuration.GetConnectionString("Conexao"))
-				);
-
-			#endregion
+			//mapeamento da injeção de dependência		
 
 			#region Configuração para Injeção de Dependência
 
@@ -63,8 +54,11 @@ namespace Project.Presentation.Api
 			services.AddTransient<IEncargosUtilidades, EncargosUtilidades>();
 
 			//camada de infra estrutura do repositorio
-			services.AddTransient<ILancamentosRepository, LancamentosRepository>();
-			services.AddTransient<IEncargosRepository, EncargosRepository>();
+			services.AddTransient<ILancamentosRepository, LancamentosRepository>
+				(s => new LancamentosRepository(connectionString)); 
+			services.AddTransient<IEncargosRepository, EncargosRepository>
+				(s => new EncargosRepository(connectionString));
+			
 
 			#endregion
 

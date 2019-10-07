@@ -15,21 +15,22 @@ namespace Project.Domain.Services
 		private readonly ILancamentosRepository repository;
 		private readonly IEncargosUtilidades encargosUtilidades;
 		private readonly IEncargosDomainServices encargosDomain;
+		
+
 
 		public LancamentoDomainServices(ILancamentosRepository repository, IEncargosUtilidades encargosUtilidades, IEncargosDomainServices encargosDomain)
 		{
 			this.repository = repository;
-
 			this.encargosUtilidades = encargosUtilidades;
 			this.encargosDomain = encargosDomain;
+			
 		}
-
 
 
 		public void Cadastrar(Lancamentos obj)
 		{
 			//método para impedir o cadastro quando o saldo está menor ou igual a -20000
-			if (ColsultarSaldoDia() <= -20000)
+			if (encargosUtilidades.ColsultarSaldoDia() <= -20000)
 			{
 				throw new ArgumentException("Não é possível cadastrar o lancamento.  Saldo negativo!");
 			}
@@ -40,7 +41,7 @@ namespace Project.Domain.Services
 			
 			//verificar se o lancamento colocado vai exceder os - 20000, mesmo com o saldo acima de 0 ou 
 			//com o desconto do encargo do dia
-			var _saldoTotal = ColsultarSaldoDia();
+			var _saldoTotal = encargosUtilidades.ColsultarSaldoDia();
 			decimal _saldo = 0;
 			if (obj.Tipo.Contains("entrada"))
 			{
@@ -65,14 +66,12 @@ namespace Project.Domain.Services
 
 
 			//verificar se depois do saldo incluso ele ficou negativo
-			if (ColsultarSaldoDia() < 0 && ColsultarSaldoDia() > -20000)
+			if (encargosUtilidades.ColsultarSaldoDia() < 0 && encargosUtilidades.ColsultarSaldoDia() > -20000)
 			{
-				if (encargosDomain.SelectOne(DateTime.Now) == null)
+				if (encargosDomain.SelectOne(DateTime.Now.Date) == null)
 				{
-					encargosUtilidades.EncargosDia(obj);//inclui encargos e o lancamento na tabela lancamento com tipo "saida"
-					obj.Tipo = "saida";
-
-					repository.Insert(obj);
+					encargosUtilidades.EncargosDia(obj);//inclui encargos na tabela
+										
 				}
 			}
 		}
@@ -105,41 +104,15 @@ namespace Project.Domain.Services
 
 			return saldo;
 
-		}
-
-		public decimal ColsultarSaldoDia()
-		{
-			var timer = DateTime.Now.Date;
-
-			var dia = repository.SelectAllDate(timer);
-			decimal saida = 0;
-			decimal entrada = 0;
-			decimal saldo;
-
-			foreach (var item in dia)
-			{
-
-				if (item.Tipo.Contains("entrada"))
-				{
-					entrada += item.ValorLancamento;
-				}
-				else
-				{
-					saida += item.ValorLancamento;
-				}
-
-			}
-
-			saldo = entrada - saida;
-
-			return saldo;
-		}
+		}		
 
 		public decimal ColsultarSaldoDiaAnterior()
 		{
 			var timer = DateTime.Today.AddDays(-1);
 
 			var dia = repository.SelectAllDate(timer);
+			var encargosDia = encargosDomain.SelectOne(timer);
+			var encargo = encargosDia?.ValorLancamento ?? 0;
 			decimal saida = 0;
 			decimal entrada = 0;
 			decimal saldo;
@@ -158,7 +131,7 @@ namespace Project.Domain.Services
 
 			}
 
-			saldo = entrada - saida;
+			saldo = entrada - (saida + encargo);
 
 			return saldo;
 		}
@@ -190,6 +163,7 @@ namespace Project.Domain.Services
 
 		public List<Lancamentos> ConsultarLancamentosDia(DateTime date)
 		{
+
 			return repository.SelectAllDate(date);
 		}
 
